@@ -1,0 +1,22 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: black;
+}
+
+html, body, main {
+  height: 100%;
+  width: 100%;
+}
+
+main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+canvas {
+  border-radius: 10px;
+  display: block;
+}
