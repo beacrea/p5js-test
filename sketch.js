@@ -1,13 +1,22 @@
+let canvasW = 2200;
+let canvasH = canvasW / 3;
+
+function preload() {
+  // Ensure the .ttf or .otf font stored in the assets directory
+  // is loaded before setup() and draw() are called
+  font = loadFont('fonts/SourceCodePro-ExtraLight.ttf');
+}
+
 function setup() {
-  createCanvas(1000, 1000);
+  createCanvas(canvasW, canvasH);
   noFill();
   noLoop();
+  textFont(font);
+  textAlign(CENTER, CENTER);
   // frameRate(1);
 }
 
 function draw() {
-  let canvasH = 1000;
-  let canvasW = 1000;
   let bgPurple = 'hsb(255, 50%, 100%)';
   let bgBlack  = 'black';
   background(bgBlack);
@@ -58,9 +67,8 @@ function gridNormal(width, height) {
 
 function gridSkewA(width, height) {
   let margin = 100;
-  let gridSize = random(10, 100);
-  let colNum = random(20, 40);
-  let rowNum = random(20, 40);
+  let colNum = random(40, 80);
+  let rowNum = colNum / 5;
   let drawHeight = height - (margin * 2);
   let drawWidth = width - (margin * 2);
   let colWidth = drawWidth / colNum;
@@ -72,40 +80,50 @@ function gridSkewA(width, height) {
   console.log('Column Height: ' + rowHeight);
 
   // Draw each element from left to right, up to down
-  let hueStart = 0;
-  let hueEnd = 360;
+  let hueStart = 200;
+  let hueEnd = 240;
   let hueInit = random(hueStart, hueEnd);
   let hue = hueInit;
   let satStart = 50;
   let satEnd = 100;
   let satInit = random(satStart, satEnd);
   let sat = satInit;
+  let gridTrans = 1;
 
   
-  for (let i = 0; i < rowNum; i++) {
-    for (let i = 0; i < colNum; i++) {
+  for (let i = 0; i < colNum; i++) {
+    for (let i = 0; i < rowNum; i++) {
+
+      gridTrans = random(0, (i/rowNum));
+
       // Draw grid
-      colorMode(RGB, 255, 255, 255, 1)
-      fill(random(0, 255), random(0, 255), random(0, 255), random(0,0.02));
-      stroke('rgba(255, 255, 255, 0.15)');
+      colorMode(HSB, 360, 100, 100, 1)
+      stroke(hueInit, satInit, 50, gridTrans);
       rect(posX, posY, colWidth, rowHeight);
 
       // Draw circles
+      let circleX = posVariance(posX, colWidth);
+      let circleY = posVariance(posY, rowHeight);
       colorMode(HSB, 360, 100, 100);
       strokeWeight(1);
       fill(0, 0, 0, 1);
-      stroke(hue, sat, 100, random(0.2, 1));
-      circle(posVariance(posX, colWidth), posVariance(posY, rowHeight), random((colWidth * 0.20), (colWidth * 1)));
+      stroke(hue, sat, 100, random(0.4, 1));
+      circle(circleX, circleY, random((rowHeight * 0.20), (rowHeight * 1)));
+      fill(hue, sat, 100, 1);
+      textSize(random(10, 56));
+      text('+', circleX, circleY);
 
       // Draw points
-      stroke(hueInit, satInit, 100);
+      fill(0, 0, 0, 1);
+      stroke(360, 0, 100);
       point(posX + (colWidth/2), posY + (rowHeight/2));
 
-      hue += (0.2 * (i/colNum) * (i/rowNum));
-      posX += colWidth;
+      hue += (hueEnd-hue) * (i/rowNum);
+      posY += rowHeight;
     }
-    hue += (0.2 * (i/rowNum));
-    posX = margin;
-    posY += rowHeight;
+    gridTrans = random(0, (i/colNum));
+    hue += (hueEnd-hue) * (i/colNum);
+    posY = margin;
+    posX += colWidth;
   }
 }
